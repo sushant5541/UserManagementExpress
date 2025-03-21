@@ -60,23 +60,7 @@ let login = async (req, res) => {
 
 
 let profile = async (req, res) => {
-
-    let {inp_email, inp_password} = req.body
-
-    let user = await User.findOne(
-        {email:inp_email})
-
-    if(!user){
-        return res.status(400).send('user Not found')
-    }
-
-    let isValidPWD = await bcrypt.compare(inp_password, user.password)
-
-        if(!isValidPWD){
-            return res.status(400).send("Invalid password");
-        } 
-
-        res.status(200).send(user)
+    res.status(200).send(req.user)
 }
 
 
