@@ -6,18 +6,37 @@ const jwt = require('jsonwebtoken')
 
 let register = async (req, res) => {
 
-    let {email, name, password} = req.body
-    console.log(email, name, password)
-
-    const salt = await bcrypt.genSalt(10);
-    password = await bcrypt.hash(password, salt);
+    try {
+    let { name, email, password} = req.body
+    console.log( name, email, password)
 
     if (!name || !email || !password) {
         return res.status(400).send("Name, email, and password are required");
     }
 
-    let user = new User({ email, name, password})
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+        return res.status(400).json({
+            success: false,
+            message: "Email already registered"
+        });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    password = await bcrypt.hash(password, salt);
+
+
+    let user = new User({name, email, password})
     await user.save()
+    res.status(200).send("registration successful")
+
+} catch (error) {
+    console.error("Registration error:", error);
+    return res.status(500).json({
+        success: false,
+        message: "Internal server error"
+    });
+}
 
 }
 
@@ -67,30 +86,12 @@ let profile = async (req, res) => {
 
 
 let transaction = async (req, res) => {
-    let {inp_email, inp_password} = req.body
-
-    let user = await User.findOne(
-        {email:inp_email, password:inp_password})
-
-    let isValidPWD = await bcrypt.compare(inp_password, user.password)
-
-        if(!isValidPWD){
-            res.status(200).json(user)
-        } 
+    res.status(200).send("This is transaction Page")
 }
 
 let wishlist = async (req, res) => {
 
-    let {inp_email, inp_password} = req.body
-
-    let user = await User.findOne(
-        {email:inp_email})
-
-    let isValidPWD = await bcrypt.compare(inp_password, user.password)
-
-        if(!isValidPWD){
-            res.status(200).json(user)
-        } 
+    res.status(200).send("This is wishlist Page")
 }
 
 module.exports = {      

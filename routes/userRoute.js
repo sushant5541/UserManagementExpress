@@ -8,7 +8,7 @@ const {register, login, profile, transaction, wishlist} = require('../controller
 
 
 router.post('/register', register)
-router.get('/login', login)
+router.post('/login', login)
 
 router.get('/profile',verify_token, profile)
 router.get('/transaction',verify_token, transaction)
